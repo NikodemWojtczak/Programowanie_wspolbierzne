@@ -30,7 +30,6 @@ namespace Kulki
         private void StartMovingRectangle()
         {
             var c = new SolidColorBrush(GetRandomColor());
-            // Create the rectangle on the UI thread
             Rectangle rect = new Rectangle
             {
                 RadiusX = 180,
@@ -41,9 +40,7 @@ namespace Kulki
                 Stroke =c,
             };
 
-            // Get initial position for the rectangle
 
-            // Use Dispatcher to add the rectangle to the canvas on the UI thread
             Dispatcher.Invoke(() =>
             {
             double x = random.NextDouble() * (MainCanvas.ActualWidth - rect.Width);
@@ -53,7 +50,6 @@ namespace Kulki
                 MainCanvas.Children.Add(rect);
             });
 
-            // Now start the thread for moving the rectangle
             Thread thread = new Thread(() =>
             {
                 int dx = move * (random.Next(2) * 2 - 1);
@@ -65,7 +61,6 @@ namespace Kulki
                         double newX = Canvas.GetLeft(rect) + dx;
                         double newY = Canvas.GetTop(rect) + dy;
 
-                        // Reverse direction upon hitting boundaries
                         if (newX <= 0 || newX >= MainCanvas.ActualWidth - rect.Width) dx = -dx;
                         if (newY <= 0 || newY >= MainCanvas.ActualHeight - rect.Height) dy = -dy;
 
@@ -75,7 +70,7 @@ namespace Kulki
                     Thread.Sleep(20);
                 }
             })
-            { IsBackground = true }; // Mark the thread as a background thread
+            { IsBackground = true }; 
             thread.SetApartmentState(ApartmentState.STA);
 
             thread.Start();

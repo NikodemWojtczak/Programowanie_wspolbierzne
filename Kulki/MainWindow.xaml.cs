@@ -17,11 +17,7 @@ namespace Kulki
             string tmp = Ilosc_kulek.Text;
             int a = int.Parse(tmp);
             Kolka k = new Kolka(a);
-            k.Show(); // Use this to show Window2 and keep Window1 open
-
-            // Alternatively, to open Window2 and close Window1:
-            // window2.Show();
-            // this.Close();
+            k.Show(); 
         }
     }
 }

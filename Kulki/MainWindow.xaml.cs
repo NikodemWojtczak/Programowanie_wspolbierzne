@@ -17,6 +17,7 @@ namespace Kulki
             string tmp = Ilosc_kulek.Text;
             int a = int.Parse(tmp);
             Kolka k = new Kolka(a);
+            this.Close();
             k.Show(); 
         }
     }

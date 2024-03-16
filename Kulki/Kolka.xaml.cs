@@ -1,6 +1,7 @@
 ﻿using Projekt.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,7 +27,6 @@ namespace Kulki
         {
             for (int i = 0; i < count; i++)
             {
-
                 double x, y;
                 while (true)
                 {
@@ -34,20 +34,19 @@ namespace Kulki
                     Random random = new Random();
                     x = random.NextDouble() * (MainCanvas.ActualWidth - kulkaSize);
                     y = random.NextDouble() * (MainCanvas.ActualHeight - kulkaSize);
-                    if (i == -0) break;
+                    if (i == 0) break;
                     foreach (var item in kulki)
                     {
                         isRunning = true;
                         double dy = Math.Abs(item.y - y);
                         double dx = Math.Abs(item.x - x);
-                        if (dx <= 2*kulkaSize && dy <= 2*kulkaSize)
+                        if (dx <= 2 * kulkaSize && dy <= 2 * kulkaSize)
                         {
                             isRunning = false;
                             break;
                         }
                     }
                     if (!isRunning) continue;
-                   
                     break;
                 }
 
@@ -73,6 +72,7 @@ namespace Kulki
                             Canvas.SetLeft(kula.rect, kula.x);
                             Canvas.SetTop(kula.rect, kula.y);
                         });
+
                         Thread.Sleep(5);
                     }
                 })
@@ -82,7 +82,6 @@ namespace Kulki
             }
         }
 
-
         private readonly object _lockObject = new object();
         void czyDoszloDoZderzenia(int id)
         {
@@ -90,7 +89,7 @@ namespace Kulki
             {
                 Kula kula1 = kulki[id];
 
-                for (int i = 0; i<= zderzenia.Count-1; i++)
+                for (int i = 0; i <= zderzenia.Count - 1; i++)
                 {
                     Zderzenie zderzenie = zderzenia[i];
                     if (kula1.id == zderzenie.id2)
@@ -105,19 +104,20 @@ namespace Kulki
                 {
                     if (k.id == id) continue;
 
-                   double dx = k.x - kula1.x;
-                   double dy = k.y - kula1.y;
+                    double dx = k.x - kula1.x;
+                    double dy = k.y - kula1.y;
                     dx = Math.Abs(dx);
                     dy = Math.Abs(dy);
                     double distance = Math.Sqrt(dx * dx + dy * dy);
-                    double minDistance = 2*Math.Sqrt((kula1.Width /2 / 1.4) * (kula1.Width /2 / 1.4) +( k.Width/2 / 1.4) * (k.Width/2 / 1.4));
+                    double minDistance = 2 * Math.Sqrt((kula1.Width / 2 / 1.4) * (kula1.Width / 2 / 1.4) + (k.Width / 2 / 1.4) * (k.Width / 2 / 1.4));
 
                     if (distance <= minDistance)
                     {
                         Zderzenie zderzenie = new Zderzenie(kula1, k);
-                        kula1.dx = zderzenie.u1x; 
+                        kula1.dx = zderzenie.u1x;
                         kula1.dy = zderzenie.u1y;
                         zderzenia.Add(zderzenie);
+                        LogCollisionData("Nastąpiła kolizja: " + zderzenie.ToString());
                         return;
                     }
 
@@ -125,5 +125,19 @@ namespace Kulki
             }
         }
 
+        public void LogCollisionData(string data)
+        {
+            try
+            {
+                using (StreamWriter writer = new StreamWriter("collisions.json", true))
+                {
+                    writer.WriteLine(data);
+                }
+            }
+            catch (IOException ex)
+            {
+                Console.WriteLine("Błąd zapisu do pliku: " + ex.Message);
+            }
+        }
     }
 }

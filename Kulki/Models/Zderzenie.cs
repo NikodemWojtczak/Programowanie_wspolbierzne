@@ -29,5 +29,10 @@ namespace Projekt.Models
              u2x = (v2x * (m2 - m1) + (2 * m1 * v1x)) / (m1 + m2);
              u2y = (v2y * (m2 - m1) + (2 * m1 * v1y)) / (m1 + m2);
         }
+
+        public override string ToString()
+        {
+            return $"Zderzenie: id1={id1}, id2={id2}, u1x={u1x}, u1y={u1y}, u2x={u2x}, u2y={u2y}";
+        }
     }
 }
